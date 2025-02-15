@@ -7,9 +7,8 @@ import configparser
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from datacenter.models import (
-    Schoolkid, Mark, Subject, Lesson, Chastisement, Commendation
-)
+from datacenter.models import (Schoolkid, Mark, Subject, Lesson,
+                               Chastisement, Commendation)
 
 
 def fix_marks(schoolkid):
@@ -19,8 +18,7 @@ def fix_marks(schoolkid):
 
 def delete_chastisements(schoolkid):
     """Удаляет все замечания для ученика."""
-    chastisements = Chastisement.objects.filter(schoolkid=schoolkid)
-    chastisements.delete()
+    Chastisement.objects.filter(schoolkid=schoolkid).delete()
 
 
 def create_commendation(schoolkid, title):
@@ -38,10 +36,9 @@ def create_commendation(schoolkid, title):
         group_letter=schoolkid.group_letter,
         subject=subject
     )
-
     if not list(lessons):
-        raise Exception ("Уроки по указанному предмету не найдены для"
-                         "данного ученика")
+        raise ValueError(f"Уроки по предмету '{subject}' не найдены для"
+                         f"ученика '{schoolkid}'")
 
     lesson = random.choice(list(lessons))
     commendation = random.choice(
@@ -66,9 +63,8 @@ def main():
     schoolkid = Schoolkid.objects.filter(full_name__contains=name)
 
     if schoolkid.count() != 1:
-        raise Exception (f"Ожидается один ученик с именем '{name}', "
+        raise ValueError(f"Ожидается один ученик с именем '{name}', "
                          f"найдено {schoolkid.count()}.")
-
     schoolkid = schoolkid.first()
 
     try:
