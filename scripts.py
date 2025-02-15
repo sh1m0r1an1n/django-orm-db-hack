@@ -1,5 +1,4 @@
 import os
-import sys
 import random
 
 import django
@@ -42,6 +41,10 @@ def create_commendation(schoolkid, title):
 
     lessons_list = list(lessons)
 
+    if not lessons_list:
+        raise Exception ("Уроки по указанному предмету не найдены для"
+                         "данного ученика")
+
     lesson = random.choice(lessons_list)
     commendation = random.choice(
         ["Молодец!", "Отлично!", "Хорошо!", "Прекрасно!", "Великолепно!"]
@@ -65,9 +68,8 @@ def main():
     schoolkid = Schoolkid.objects.filter(full_name__contains=name)
 
     if schoolkid.count() != 1:
-        print(f"Ожидается один ученик с именем '{name}', "
-              f"найдено {schoolkid.count()}.")
-        sys.exit(1)
+        raise Exception (f"Ожидается один ученик с именем '{name}', "
+                         f"найдено {schoolkid.count()}.")
 
     schoolkid = schoolkid.first()
 
