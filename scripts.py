@@ -1,4 +1,5 @@
 import os
+import sys
 import random
 
 import django
@@ -61,11 +62,14 @@ def main():
     name = config.get('DEFAULT', 'name', fallback="Фролов Иван")
     title = config.get('DEFAULT', 'title', fallback="Математика")
 
-    try:
-        schoolkid = Schoolkid.objects.get(full_name__contains=name)
-    except Schoolkid.DoesNotExist:
-        print(f"Ученик с именем '{name}', не найден.")
-        return
+    schoolkid = Schoolkid.objects.filter(full_name__contains=name)
+
+    if schoolkid.count() != 1:
+        print(f"Ожидается один ученик с именем '{name}', "
+              f"найдено {schoolkid.count()}.")
+        sys.exit(1)
+
+    schoolkid = schoolkid.first()
 
     try:
         fix_marks(schoolkid)
