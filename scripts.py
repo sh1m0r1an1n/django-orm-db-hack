@@ -39,13 +39,11 @@ def create_commendation(schoolkid, title):
         subject=subject
     )
 
-    lessons_list = list(lessons)
-
-    if not lessons_list:
+    if not list(lessons):
         raise Exception ("Уроки по указанному предмету не найдены для"
                          "данного ученика")
 
-    lesson = random.choice(lessons_list)
+    lesson = random.choice(list(lessons))
     commendation = random.choice(
         ["Молодец!", "Отлично!", "Хорошо!", "Прекрасно!", "Великолепно!"]
     )
