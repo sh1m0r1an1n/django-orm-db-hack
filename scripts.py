@@ -7,8 +7,7 @@ import configparser
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from datacenter.models import Schoolkid, Mark, Subject, Lesson, Chastisement
-from datacenter.models import Commendation
+from datacenter.models import Schoolkid, Mark, Subject, Lesson, Chastisement, Commendation
 
 
 def fix_marks(schoolkid):
