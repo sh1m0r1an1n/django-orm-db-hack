@@ -60,12 +60,14 @@ def main():
     name = config.get('DEFAULT', 'name', fallback="Фролов Иван")
     title = config.get('DEFAULT', 'title', fallback="Математика")
 
-    schoolkid = Schoolkid.objects.filter(full_name__contains=name)
-
-    if schoolkid.count() != 1:
-        raise ValueError(f"Ожидается один ученик с именем '{name}', "
-                         f"найдено {schoolkid.count()}.")
-    schoolkid = schoolkid.first()
+    try:
+        schoolkid = Schoolkid.objects.get(full_name__contains=name)
+    except Schoolkid.DoesNotExist:
+        print(f"Ученик с именем '{name}', не найден.")
+        return
+    except Schoolkid.MultipleObjectsReturned:
+        print(f"Учеников с именем '{name}' несколько, уточните запрос.")
+        return
 
     try:
         fix_marks(schoolkid)
