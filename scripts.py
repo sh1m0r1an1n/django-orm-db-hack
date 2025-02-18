@@ -36,11 +36,12 @@ def create_commendation(schoolkid, title):
         group_letter=schoolkid.group_letter,
         subject=subject
     )
-    if not list(lessons):
-        raise ValueError(f"Уроки по предмету '{subject}' не найдены для"
-                         f"ученика '{schoolkid}'")
 
-    lesson = random.choice(list(lessons))
+    try:
+        lesson = random.choice(list(lessons))
+    except IndexError:
+        raise IndexError(f"Уроки по предмету '{subject}' не найдены")
+
     commendation = random.choice(
         ["Молодец!", "Отлично!", "Хорошо!", "Прекрасно!", "Великолепно!"]
     )
@@ -63,11 +64,9 @@ def main():
     try:
         schoolkid = Schoolkid.objects.get(full_name__contains=name)
     except Schoolkid.DoesNotExist:
-        print(f"Ученик с именем '{name}', не найден.")
-        return
+        raise ValueError(f"Ученик с именем '{name}', не найден.")
     except Schoolkid.MultipleObjectsReturned:
-        print(f"Учеников с именем '{name}' несколько, уточните запрос.")
-        return
+        raise ValueError(f"Учеников с именем '{name}' несколько, уточните запрос.")
 
     try:
         fix_marks(schoolkid)
