@@ -21,15 +21,15 @@ def delete_chastisements(schoolkid):
     Chastisement.objects.filter(schoolkid=schoolkid).delete()
 
 
-def create_commendation(schoolkid, title):
+def create_commendation(schoolkid, subject_title):
     """Создает похвалу для ученика по указанному предмету."""
     try:
         subject = Subject.objects.get(
-            title=title,
+            title=subject_title,
             year_of_study=schoolkid.year_of_study
         )
     except Subject.DoesNotExist:
-        raise ValueError(f"Предмет '{title}' не найден.")
+        raise ValueError(f"Предмет '{subject_title}' не найден.")
 
     lessons = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
@@ -71,10 +71,10 @@ def main():
     try:
         fix_marks(schoolkid)
         delete_chastisements(schoolkid)
-        create_commendation(schoolkid, title)
+        create_commendation(schoolkid, subject_title)
         print("Операция выполнена успешно!")
         print(f"Исправлены оценки для ученика с именем '{name}'.")
-        print(f"Добавлена похвала по предмету '{title}'.")
+        print(f"Добавлена похвала по предмету '{subject_title}'.")
     except Exception as error:
         print(f"Ошибка при выполнении программы: {error}")
 
