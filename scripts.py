@@ -55,12 +55,11 @@ def create_commendation(schoolkid, subject_title):
 def get_shcoolkid(name):
     """Находит ученика по имени."""
     try:
-        schoolkid = Schoolkid.objects.get(full_name__contains=name)
+        return Schoolkid.objects.get(full_name__contains=name)
     except Schoolkid.DoesNotExist:
         raise ValueError(f"Ученик с именем '{name}', не найден.")
     except Schoolkid.MultipleObjectsReturned:
         raise ValueError(f"Учеников с именем '{name}' несколько, уточните запрос.")
-    return schoolkid
 
 
 def main():
@@ -70,9 +69,8 @@ def main():
     name = config.get('DEFAULT', 'name', fallback="Фролов Иван")
     subject_title = config.get('DEFAULT', 'subject_title', fallback="Математика")
 
-    schoolkid = get_shcoolkid(name)
-
     try:
+        schoolkid = get_shcoolkid(name)
         fix_marks(schoolkid)
         delete_chastisements(schoolkid)
         create_commendation(schoolkid, subject_title)
