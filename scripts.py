@@ -7,8 +7,8 @@ import configparser
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from datacenter.models import (Schoolkid, Mark, Subject, Lesson,
-                               Chastisement, Commendation)
+from datacenter.models import Schoolkid, Mark, Subject, Lesson, Chastisement
+from datacenter.models import Commendation
 
 
 def fix_marks(schoolkid):
@@ -54,19 +54,25 @@ def create_commendation(schoolkid, subject_title):
     )
 
 
-def main():
-    config = configparser.ConfigParser()
-    config.read('config.ini', encoding='utf-8')
-
-    name = config.get('DEFAULT', 'name', fallback="Фролов Иван")
-    title = config.get('DEFAULT', 'title', fallback="Математика")
-
+def get_shcoolkid(name):
+    """Находит ученика по имени."""
     try:
         schoolkid = Schoolkid.objects.get(full_name__contains=name)
     except Schoolkid.DoesNotExist:
         raise ValueError(f"Ученик с именем '{name}', не найден.")
     except Schoolkid.MultipleObjectsReturned:
         raise ValueError(f"Учеников с именем '{name}' несколько, уточните запрос.")
+    return schoolkid
+
+
+def main():
+    config = configparser.ConfigParser()
+    config.read('config.ini', encoding='utf-8')
+
+    name = config.get('DEFAULT', 'name', fallback="Фролов Иван")
+    subject_title = config.get('DEFAULT', 'subject_title', fallback="Математика")
+
+    schoolkid = get_shcoolkid(name)
 
     try:
         fix_marks(schoolkid)
